@@ -41,48 +41,49 @@ class UdacityClient: NSObject {
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = "{\"udacity\": {\"username\": \"ericwei94@gmail.com\", \"password\": \"Androidup15\"}}".data(using: String.Encoding.utf8)
+        request.httpBody = "{\"udacity\": {\"username\": \"\(emailText)\", \"password\": \"\(passwordText)\"}}".data(using: String.Encoding.utf8)
+        
+        print("request == '\(request.httpBody)'")
         
         let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
             
-            //            func displayError(_ error: String) {
-            //                print(error)
-            //                performUIUpdatesOnMain {
-            //                    self.setUIEnabled(true)
-            //                    self.debugTextLabel.text = "Login Failed (Session ID)."
-            //                }
-            //            }
+            func sendError(_ error: String) {
+                print(error)
+                completionHandlerForSessionID(false,error)
+            }
             
             guard (error == nil) else { // Handle error
-                // displayError("There was an error with your request: \(error)")
+                sendError("There was an error with your request: \(error)")
                 return
             }
             guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                // displayError("Your request returned a status code other than 2xx!")
+                sendError("Your request returned a status code other than 2xx!")
                 return
             }
             guard let data = data else {
-                // displayError("No data was returned by the request!")
+                sendError("No data was returned by the request!")
                 return
             }
             
-            let parsedResult: [String:AnyObject]!
-            do{
-                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:AnyObject]
-            } catch {
-                //displayError("Could not parse the data as JSON: '\(data)'")
-                return
-            }
+            //            let parsedResult: [String:AnyObject]!
+            //            do{
+            //                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:AnyObject]
+            //                print("parsedResult == '\(parsedResult)'")
+            //            } catch {
+            //                //displayError("Could not parse the data as JSON: '\(data)'")
+            //                return
+            //            }
             
-//            if let status = parsedResult["status"] as? Int, status  {
-//                
-//            }
-            print("parsedResult == '\(parsedResult)'")
+            //            if let status = parsedResult["status"] as? Int, status  {
+            //
+            //            }
+            
             print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
             
             completionHandlerForSessionID(true,nil)
             
         }
+        
         task.resume()
     }
     

@@ -25,7 +25,7 @@ class LoginViewController: UIViewController {
         if emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty {
             debugTextLabel.text = "Email or Password Empty."
         } else {
-            setUIEnabled(false)
+            //setUIEnabled(false)
             UdacityClient.sharedInstance().getSessionID(emailTextField.text!, passwordTextField.text!, { (success, errorString) in
                 performUIUpdatesOnMain {
                     if success {
