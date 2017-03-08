@@ -18,7 +18,8 @@ class ParseClient : NSObject {
     //https://parse.udacity.com/parse/classes/StudentLocation
     
     //MARK: GET
-    func taskForGetMethod(parameters: [String:AnyObject])  {
+    //, completionHandlerForGET: @escaping(_ result: AnyObject?, _ error: String) -> Void
+    func taskForGetMethod(parameters: [String:AnyObject]) -> URLSessionTask {
         
 //        var parametersWithApiKey = parameters
 //        parametersWithApiKey[ParameterKeys.ApiKey] = Constants.ApiKey as AnyObject?
@@ -42,8 +43,12 @@ class ParseClient : NSObject {
             }
             print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
             
+            //populate the StudentInformation array
+            self.convertDataWithCompletionHandler(data!)
+            
         }
         task.resume()
+        return task
     }
     
     func getStudentLocations()  {
@@ -89,8 +94,27 @@ class ParseClient : NSObject {
         
     }
     
+    //given raw JSON, return a usable Foundation object
+    func convertDataWithCompletionHandler(_ data: Data) {
+        var parsedResult: AnyObject! = nil
+        do {
+            parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
+            
+            //get an array of StudentInformation objects
+            if let results = parsedResult?[JSONResponseKeys.results] as? [[String:AnyObject]] {
+                StudentInformation.StudentArray = StudentInformation.studentInfoFromResults(results)
+                print("StudentArray has length \(StudentInformation.StudentArray.count)")
+            }
+            
+        } catch {
+            let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)"]
+            
+           // completionHandler???
+        }
+    }
     
     
+    // create a URL from parameters
     private func parseURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
         var components = URLComponents()
         components.scheme = ParseClient.Constants.ApiScheme
