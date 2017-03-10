@@ -45,6 +45,6 @@ struct StudentInformation {
         return studentArray
     }
     
-    static var StudentArray : [StudentInformation] = []
+    static var StudentArray = [StudentInformation]()
 }
 
