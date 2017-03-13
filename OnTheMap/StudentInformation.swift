@@ -46,5 +46,22 @@ struct StudentInformation {
     }
     
     static var StudentArray = [StudentInformation]()
+    
+//    let MyInformation = [
+//        ParseClient.JSONResponseKeys.objectID: ""
+//        ParseClient.JSONResponseKeys.uniqueKey: "1234"
+//        ParseClient.JSONResponseKeys.
+//        ParseClient.JSONResponseKeys.
+//        ParseClient.JSONResponseKeys.
+//        ParseClient.JSONResponseKeys.
+//        ParseClient.JSONResponseKeys.
+//        ParseClient.JSONResponseKeys.
+//        ParseClient.JSONResponseKeys.
+//        ParseClient.JSONResponseKeys.
+//    ]
+//    static var MyStudentInformation: StudentInformation{
+//        MyStudentInformation.ob
+//    }
+    static var MyStudentInfoObjectID : String = ""
 }
 

@@ -19,7 +19,7 @@ class ParseClient : NSObject {
     
     //MARK: GET
     //, completionHandlerForGET: @escaping(_ result: AnyObject?, _ error: String) -> Void
-    func taskForGetMethod(parameters: [String:AnyObject]) -> URLSessionTask {
+    func getStudentLocations(parameters: [String:AnyObject]) -> URLSessionTask {
         
         //        var parametersWithApiKey = parameters
         //        parametersWithApiKey[ParameterKeys.ApiKey] = Constants.ApiKey as AnyObject?
@@ -41,7 +41,7 @@ class ParseClient : NSObject {
                 sendError("There was an error with your request: \(error)")
                 return
             }
-            print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
+           // print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
             
             //populate the StudentInformation array
             self.convertDataWithCompletionHandler(data!)
@@ -62,7 +62,7 @@ class ParseClient : NSObject {
     }
     
     //MARK: POST
-    func postStudentLocation(jsonBody: String) {
+    func postStudentLocation(jsonBody: String, completionHandler: @escaping (_ success: Bool, _ error: NSError?) -> Void) {
         
         //        var parametersWithApiKey = parameters
         //        parametersWithApiKey[ParameterKeys.ApiKey] = Constants.ApiKey as AnyObject?
@@ -79,55 +79,71 @@ class ParseClient : NSObject {
         print("in postStudentLocation()")
         
         let task = session.dataTask(with: request as URLRequest){ (data,response,error) in
-            func sendError(_ error: String) {
-                print(error)
-                let userInfo = [NSLocalizedDescriptionKey: error]
-                //completionHandlerForGET()
-            }
             
             guard (error == nil) else {
-                sendError("There was an error with your request: \(error)")
+                let userInfo = [NSLocalizedDescriptionKey : error]
+                completionHandler(false, NSError(domain: "postStudentLocation", code: 1, userInfo: userInfo))
                 return
             }
             print("response for post student!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
+            
+            //save the ObjectID right here!!!!
+            self.getStudentObjectID(data: data!)
+            completionHandler(true, nil)
+            
         }
         
         task.resume()
-        
+    }
+    
+    func getStudentObjectID(data: Data) {
+        if StudentInformation.MyStudentInfoObjectID == "" {
+            var parsedResult: AnyObject! = nil
+            do {
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
+                
+                if let objectID = parsedResult?[JSONResponseKeys.objectID] as? String {
+                    print(objectID)
+                    StudentInformation.MyStudentInfoObjectID = objectID
+                }
+            } catch {
+                print("error getting objectID")
+            }
+        }
     }
     
     
     //MARK: PUT
     func putStudentLocation(parameters:[String:AnyObject]) {
-//        //how do you get teh objectId?
-//        let request = NSMutableURLRequest(url: parseURLFromParameters(parameters))
-//        request.httpMethod = "PUT"
-//        request.addValue(Constants.ApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
-//        request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
-//        
-//        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-//        request.httpBody =
-//        
-//        print("request putStudentLocation === \(request)")
-//        
-//        let task = session.dataTask(with: request as URLRequest) { (data,response,error) in
-//            func sendError(_ error: String) {
-//                print(error)
-//                let userInfo = [NSLocalizedDescriptionKey: error]
-//                //completionHandlerForGET()
-//            }
-//            
-//            guard (error == nil) else {
-//                sendError("There was an error with your request: \(error)")
-//                return
-//            }
-//            print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
-//            
-//            //populate the StudentInformation array
-//            self.convertDataWithCompletionHandler(data!)
-//            
-//        }
-//        task.resume()
+        //        //how do you get teh objectId?
+        //        let request = NSMutableURLRequest(url: parseURLFromParameters(parameters))
+        //        request.httpMethod = "PUT"
+        //        request.addValue(Constants.ApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
+        //        request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+        //
+        //        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        //        request.httpBody =
+        //
+        //        print("request putStudentLocation === \(request)")
+        //
+        //        let task = session.dataTask(with: request as URLRequest) { (data,response,error) in
+        //            func sendError(_ error: String) {
+        //                print(error)
+        //                let userInfo = [NSLocalizedDescriptionKey: error]
+        //                //completionHandlerForGET()
+        //            }
+        //
+        //            guard (error == nil) else {
+        //                sendError("There was an error with your request: \(error)")
+        //                return
+        //            }
+        //            print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
+        //
+        //            //populate the StudentInformation array
+        //            self.convertDataWithCompletionHandler(data!)
+        //
+        //        }
+        //        task.resume()
         
     }
     

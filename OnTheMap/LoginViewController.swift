@@ -19,37 +19,32 @@ class LoginViewController: UIViewController {
         
     }
     
-    
     @IBAction func loginPressed(_ sender: Any) {
         
-        if emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty {
-            debugTextLabel.text = "Email or Password Empty."
-        } else {
-            //setUIEnabled(false)
-            UdacityClient.sharedInstance().getSessionID(emailTextField.text!, passwordTextField.text!, { (success, errorString) in
-                performUIUpdatesOnMain {
-                    if success {
-                        self.completeLogin()
-                    } else {
-                        self.displayError(errorString)
-                    }
+//        if emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty {
+//            debugTextLabel.text = "Email or Password Empty."
+//        } else {
+//            //setUIEnabled(false)
+//            UdacityClient.sharedInstance().getSessionID(emailTextField.text!, passwordTextField.text!, { (success, errorString) in
+//                performUIUpdatesOnMain {
+//                    if success {
+//                        self.completeLogin()
+//                    } else {
+//                        self.displayError(errorString)
+//                    }
+//                }
+//            })
+//        }
+        //for quicker access
+        UdacityClient.sharedInstance().getSessionID(emailTextField.text!, passwordTextField.text!, { (success, errorString) in
+            performUIUpdatesOnMain {
+                if success {
+                    self.completeLogin()
+                } else {
+                    self.displayError(errorString)
                 }
-            })
-            
-            //            UdacityClient.sharedInstance().authenticateWithViewController(self) { (success, errorString) in
-            //                performUIUpdatesOnMain {
-            //                    if success {
-            //                        self.completeLogin()
-            //                    } else {
-            //                        self.displayError(errorString)
-            //                    }
-            //                }
-            //            }
-            
-        }
-        
-        
-        
+            }
+        })
     }
     
     private func completeLogin() {
