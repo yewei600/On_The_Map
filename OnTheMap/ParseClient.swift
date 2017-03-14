@@ -19,46 +19,38 @@ class ParseClient : NSObject {
     
     //MARK: GET
     //, completionHandlerForGET: @escaping(_ result: AnyObject?, _ error: String) -> Void
-    func getStudentLocations(parameters: [String:AnyObject]) -> URLSessionTask {
-        
-        //        var parametersWithApiKey = parameters
-        //        parametersWithApiKey[ParameterKeys.ApiKey] = Constants.ApiKey as AnyObject?
-        //
-        let request = NSMutableURLRequest(url: parseURLFromParameters(parameters))
-        request.addValue(Constants.ApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
-        request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
-        
-        print("request taskForGetMethod === \(request)")
-        
-        let task = session.dataTask(with: request as URLRequest) { (data,response,error) in
-            func sendError(_ error: String) {
-                print(error)
-                let userInfo = [NSLocalizedDescriptionKey: error]
-                //completionHandlerForGET()
+    func getStudentLocations(parameters: [String:AnyObject], completionHandler: @escaping (_ success: Bool, _ error: NSError?) -> Void)
+        -> URLSessionTask {
+            
+            //        var parametersWithApiKey = parameters
+            //        parametersWithApiKey[ParameterKeys.ApiKey] = Constants.ApiKey as AnyObject?
+            //
+            let request = NSMutableURLRequest(url: parseURLFromParameters(parameters))
+            request.addValue(Constants.ApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
+            request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
+            
+            print("request taskForGetMethod === \(request)")
+            
+            let task = session.dataTask(with: request as URLRequest) { (data,response,error) in
+                func sendError(_ error: String) {
+                    let userInfo = [NSLocalizedDescriptionKey : error]
+                    completionHandler(false, NSError(domain: "getStudentLocations", code: 1, userInfo: userInfo))
+                    return
+                }
+                
+                guard (error == nil) else {
+                    sendError("There was an error with your request: \(error)")
+                    return
+                }
+                // print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
+                
+                //populate the StudentInformation array
+                self.convertDataWithCompletionHandler(data!)
+                
+                completionHandler(true,nil)
             }
-            
-            guard (error == nil) else {
-                sendError("There was an error with your request: \(error)")
-                return
-            }
-           // print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
-            
-            //populate the StudentInformation array
-            self.convertDataWithCompletionHandler(data!)
-            
-        }
-        task.resume()
-        return task
-    }
-    
-    func getStudentLocations()  {
-        
-        // let _ = taskForGetMethod(<#T##method: String##String#>, parameters: <#T##[String : AnyObject]#>)
-        
-    }
-    
-    func getStudentLocation() {
-        
+            task.resume()
+            return task
     }
     
     //MARK: POST

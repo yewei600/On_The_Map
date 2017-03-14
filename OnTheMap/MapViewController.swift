@@ -15,14 +15,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     
     @IBAction func logoutSession(_ sender: Any) {
-        
-        
+        UdacityClient.sharedInstance().deleteSessionID { (success, error) in
+            if success {
+                //go back to the login screen
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib
-        
+    override func viewWillAppear(_ animated: Bool) {
         var annotations = [MKPointAnnotation]()
         
         let studentLocations = StudentInformation.StudentArray
@@ -44,6 +45,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             annotations.append(annotation)
         }
         self.mapView.addAnnotations(annotations)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib
     }
     
     //MARK: MKMapViewDelegate

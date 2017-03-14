@@ -19,6 +19,12 @@ class InfoPostingViewController: UIViewController{
     let parseClient = ParseClient.sharedInstance()
     var placemark: CLPlacemark? = nil
     
+    // MARK: Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureUI(.findLocation)
+    }
+    
     // MARK: Outlets
     @IBOutlet weak var postingMapView: MKMapView!
     @IBOutlet weak var mapStringTextField: UITextField!
@@ -27,8 +33,6 @@ class InfoPostingViewController: UIViewController{
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    // MARK: Life Cycle
-        
     @IBAction func exitInfoPostingEditor(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -39,12 +43,13 @@ class InfoPostingViewController: UIViewController{
             return
         }
         //start activity indicator
+        startActivity()
         
         //add placemark
         let delayInSeconds = 1.5
         let delay = delayInSeconds * Double(NSEC_PER_SEC)
         let popTime = DispatchTime.now() + Double(Int64(delay)) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: popTime) { 
+        DispatchQueue.main.asyncAfter(deadline: popTime) {
             let geocoder = CLGeocoder()
             
             geocoder.geocodeAddressString(self.mapStringTextField.text!, completionHandler: { (results, error) in
@@ -75,48 +80,70 @@ class InfoPostingViewController: UIViewController{
             return
         }
         
-        let handleRequest: ((NSError?, String) -> Void) = { (error, mediaURL) in
-            if let _ = error {
-                self.displayAlert("Student location couldn't be posted") { (alert) in
-                    self.dismiss(animated: true, completion: nil)
-                }
-            }else{
-                    self.dismiss(animated: true, completion: nil)
-                }
-            }
+        //        let handleRequest: ((NSError?, String) -> Void) = { (error, mediaURL) in
+        //            if let _ = error {
+        //                self.displayAlert("Student location couldn't be posted") { (alert) in
+        //                    self.dismiss(animated: true, completion: nil)
+        //                }
+        //            }else{
+        //                self.dismiss(animated: true, completion: nil)
+        //            }
+        //        }
         
         let studentLocation = placemark?.location?.coordinate
         
-        let jsonRequest = "{\"uniqueKey\": \"1234\", \"firstName\": \"Eric\", \"lastName\": \"Wei\",\"mapString\": \"\(mapStringTextField.text!)\", \"mediaURL\": \"\(mediaURLTextField.text!)\",\"latitude\": \(studentLocation!.latitude), \"longitude\": \(studentLocation!.longitude)}"
+        let jsonRequest = "{\"uniqueKey\": \"1234\", \"firstName\": \"Eric\", \"lastName\": \"Wei\",\"mapString\": \"\(mapStringTextField.text!)\", \"mediaURL\": \"https://\(mediaURLTextField.text!)\",\"latitude\": \(studentLocation!.latitude), \"longitude\": \(studentLocation!.longitude)}"
         
         print(jsonRequest)
         
         parseClient.postStudentLocation(jsonBody: jsonRequest){ (success, error) in
-            
-            //ParseClient.sharedInstance().getStudentLocations(parameters: parameters as [String:AnyObject])
-
+            if success {
+                let parameters = [
+                    "limit":100
+                ]
+                ParseClient.sharedInstance().getStudentLocations(parameters: parameters as [String:AnyObject], completionHandler: { (success, error) in
+                    self.stopActivity()
+                    if success {
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                })
+            }
         }
-        
     }
     
     
     func displayAlert(_ message: String, completionHandler:((UIAlertAction) -> Void)? = nil) {
         DispatchQueue.main.async {
-        
+            
         }
     }
     
     
     
     //MARK: Configure UI (Activity)
-    func setupUI() {
-        
-        activityIndicator.isHidden = true
-        activityIndicator.stopAnimating()
-    }
+    //    func setupUI() {
+    //
+    //        activityIndicator.isHidden = true
+    //        activityIndicator.stopAnimating()
+    //    }
     
     func configureUI(_ state: ViewState) {
+        stopActivity()
         
+        UIView.animate(withDuration: 1.0) {
+            switch(state) {
+            case .findLocation:
+                self.findButton.isHidden = false
+                self.submitButton.isHidden = true
+                self.mapStringTextField.isHidden = false
+                self.mediaURLTextField.isHidden = true
+            case .postLocation:
+                self.findButton.isHidden = true
+                self.submitButton.isHidden = false
+                self.mapStringTextField.isHidden = true
+                self.mediaURLTextField.isHidden = false
+            }
+        }
         
     }
     
@@ -124,5 +151,10 @@ class InfoPostingViewController: UIViewController{
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
         
+    }
+    
+    func stopActivity() {
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
     }
 }

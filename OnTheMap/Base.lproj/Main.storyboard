@@ -283,7 +283,11 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="On The Map" id="TBm-f5-b20" userLabel="On The Map">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="Tpk-GK-tuS"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="Tpk-GK-tuS">
+                            <connections>
+                                <action selector="logoutSession:" destination="5zr-xF-COr" id="eGu-3B-Lsd"/>
+                            </connections>
+                        </barButtonItem>
                         <rightBarButtonItems>
                             <barButtonItem title="ref" id="Bza-86-SUW"/>
                             <barButtonItem title="pin" id="h87-ai-XSu">
@@ -304,6 +308,6 @@
         <image name="second" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="7DE-TE-dJn"/>
+        <segue reference="ctk-kA-nME"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -35,7 +35,7 @@ class UdacityClient: NSObject {
     
     
     //MARK: GET
-    func getSessionID(_ emailText:String, _ passwordText: String, _ completionHandlerForSessionID: @escaping (_ success: Bool, _ errorStr: String?) -> Void) {
+    func getSessionID(_ emailText:String, _ passwordText: String, _ completionHandlerForGetSessionID: @escaping (_ success: Bool, _ errorStr: String?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api/session")!)
         request.httpMethod = "POST"
@@ -50,11 +50,11 @@ class UdacityClient: NSObject {
             
             func sendError(_ error: String) {
                 print(error)
-                completionHandlerForSessionID(false,error)
+                completionHandlerForGetSessionID(false,error)
             }
             
             guard (error == nil) else { // Handle error
-                sendError("There was an error with your request: \(error)")
+                sendError("There was an error getting Session ID: \(error)")
                 return
             }
             guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
@@ -81,7 +81,7 @@ class UdacityClient: NSObject {
             
             print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
             
-            completionHandlerForSessionID(true,nil)
+            completionHandlerForGetSessionID(true,nil)
             
         }
         
@@ -90,7 +90,7 @@ class UdacityClient: NSObject {
     
     
     //MARK: DELETE
-    func deleteSessionID (<#parameters#>) -> <#return type#> {
+    func deleteSessionID (_ completionHandlerForDeleteSessionID: @escaping (_ success: Bool, _ errorStr: String?) -> Void)  {
         let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api/session")!)
         request.httpMethod = "DELETE"
         var xsrfCookie: HTTPCookie? = nil
@@ -102,16 +102,31 @@ class UdacityClient: NSObject {
             request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
         }
         let session = URLSession.shared
-        let task = session.dataTask(with: request as URLRequest) { data, response, error in
-            if error != nil { // Handle error…
+        let task = session.dataTask(with: request as URLRequest) { (data, response, error) in
+            func sendError(_ error: String) {
+                print(error)
+                completionHandlerForDeleteSessionID(false,error)
+            }
+            
+            guard (error == nil) else { // Handle error…
+                sendError("There was an error deleting Session ID: \(error)")
                 return
             }
-            let range = Range(5 ..< data!.count)
-            let newData = data?.subdata(in: range) /* subset response data! */
-            print(NSString(data: newData!, encoding: String.Encoding.utf8.rawValue)!)
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                sendError("Your request returned a status code other than 2xx!")
+                return
+            }
+            guard let data = data else {
+                sendError("No data was returned by the request!")
+                return
+            }
+            
+            print("Delete sessionID: \(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)")
+            
+            completionHandlerForDeleteSessionID(true,nil)
         }
         task.resume()
-
+        
     }
     
     

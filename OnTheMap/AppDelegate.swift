@@ -20,12 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let parameters = [
             "limit":100
         ]
-        ParseClient.sharedInstance().getStudentLocations(parameters: parameters as [String:AnyObject])
-        
-        //try the post method
-        //        let jsonRequest = "{\"uniqueKey\": \"5574\", \"firstName\": \"Eric\", \"lastName\": \"Wei\",\"mapString\": \"Waterloo, Ontario\", \"mediaURL\": \"https://udacity.com\",\"latitude\": 43.475237, \"longitude\": -80.524389}"
-        //
-        //        ParseClient.sharedInstance().postStudentLocation(jsonBody: jsonRequest)
+        ParseClient.sharedInstance().getStudentLocations(parameters: parameters as [String:AnyObject], completionHandler: { (success, error) in
+        })
         
         return true
     }

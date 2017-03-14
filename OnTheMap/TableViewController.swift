@@ -11,20 +11,31 @@ import UIKit
 class TableViewController: UITableViewController {
     
     //MARK: properties
-    let studentLocations = StudentInformation.StudentArray
+    var studentLocations = [StudentInformation]()
     
     //MARK: lifecycle
     override func viewWillAppear(_ animated: Bool) {
-        
-        // tableView.reloadData()
+        studentLocations = StudentInformation.StudentArray
+        tableView.reloadData()
     }
+    
+    
+    @IBAction func logoutSession(_ sender: Any) {
+        UdacityClient.sharedInstance().deleteSessionID { (success, error) in
+            if success {
+                //go back to the login screen
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StudentNameCell")!
         let student = studentLocations[(indexPath as IndexPath).row]
         
         cell.textLabel?.text = student.firstName + " " + student.lastName
-        print("student name for row \(indexPath as IndexPath).row is \(student.firstName)")
+        print("student for row \(indexPath as IndexPath).row is \(student.firstName) \(student.lastName) \(student.mediaURL)")
         return cell
     }
     
