@@ -15,24 +15,10 @@ class UdacityClient: NSObject {
     //shared session
     var session = URLSession.shared
     
-    //configuration object
-    //var config =
-    
     //authentication state
     var requestToken: String? = nil
     var sessionID: String? = nil
     var userID: Int? = nil
-    
-    //MARK: Initializers
-    //???
-    
-    //    func authenticateWithViewController(_ hostViewController: UIViewController, completionHandlerForAuth: @escaping (_ success: Bool, _ errorStr: String?) -> Void) {
-    //
-    //
-    //
-    //    }
-    
-    
     
     //MARK: GET
     func getSessionID(_ emailText:String, _ passwordText: String, _ completionHandlerForGetSessionID: @escaping (_ success: Bool, _ errorStr: String?) -> Void) {
@@ -41,8 +27,7 @@ class UdacityClient: NSObject {
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        //request.httpBody = "{\"udacity\": {\"username\": \"\(emailText)\", \"password\": \"\(passwordText)\"}}".data(using: String.Encoding.utf8)
-        request.httpBody = "{\"udacity\": {\"username\": \"ericwei94@gmail.com\", \"password\": \"Androidup15\"}}".data(using: String.Encoding.utf8)
+        request.httpBody = "{\"udacity\": {\"username\": \"\(emailText)\", \"password\": \"\(passwordText)\"}}".data(using: String.Encoding.utf8)
         
         print("request == '\(request.httpBody)'")
         
@@ -54,30 +39,17 @@ class UdacityClient: NSObject {
             }
             
             guard (error == nil) else { // Handle error
-                sendError("There was an error getting Session ID: \(error)")
+                sendError("Login Failed")
                 return
             }
             guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
-                sendError("Your request returned a status code other than 2xx!")
+                sendError("Login Failed")
                 return
             }
             guard let data = data else {
-                sendError("No data was returned by the request!")
+                sendError("Login Failed")
                 return
             }
-            
-            //            let parsedResult: [String:AnyObject]!
-            //            do{
-            //                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as! [String:AnyObject]
-            //                print("parsedResult == '\(parsedResult)'")
-            //            } catch {
-            //                //displayError("Could not parse the data as JSON: '\(data)'")
-            //                return
-            //            }
-            
-            //            if let status = parsedResult["status"] as? Int, status  {
-            //
-            //            }
             
             print(NSString(data: data, encoding: String.Encoding.utf8.rawValue)!)
             

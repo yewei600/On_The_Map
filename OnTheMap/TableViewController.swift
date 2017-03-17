@@ -19,7 +19,6 @@ class TableViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    
     @IBAction func logoutSession(_ sender: Any) {
         UdacityClient.sharedInstance().deleteSessionID { (success, error) in
             if success {
@@ -28,7 +27,6 @@ class TableViewController: UITableViewController {
             }
         }
     }
-    
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StudentNameCell")!
@@ -50,4 +48,3 @@ class TableViewController: UITableViewController {
         UIApplication.shared.openURL(URL(string: student.mediaURL)!)
     }
 }
-

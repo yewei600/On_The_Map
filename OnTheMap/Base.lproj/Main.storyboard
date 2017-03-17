@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="gf3-2w-YLH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16D32" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="gf3-2w-YLH">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -40,7 +39,7 @@
                                 <action selector="logoutSession:" destination="9pv-A4-QxB" id="L2l-Vi-CrY"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="pin" id="1zQ-M2-Vbi">
+                        <barButtonItem key="rightBarButtonItem" image="pin" id="1zQ-M2-Vbi">
                             <connections>
                                 <segue destination="cua-j6-EzL" kind="presentation" id="7DE-TE-dJn"/>
                             </connections>
@@ -66,7 +65,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Where are you studying today?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IUV-sq-khB">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IUV-sq-khB">
                                 <rect key="frame" x="8" y="64" width="359" height="82"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -131,9 +130,11 @@
                     <connections>
                         <outlet property="activityIndicator" destination="JgS-5n-q73" id="Ozb-1Y-vfO"/>
                         <outlet property="findButton" destination="EVs-cZ-qRk" id="c1N-EC-MvW"/>
+                        <outlet property="infoLabel" destination="IUV-sq-khB" id="Zum-sY-kFf"/>
                         <outlet property="mapStringTextField" destination="e46-t7-ZfB" id="gk9-yP-wPI"/>
                         <outlet property="mediaURLTextField" destination="Uhz-nJ-DhA" id="PJt-D5-61S"/>
                         <outlet property="postingMapView" destination="32y-22-pPc" id="ZKY-eq-EWF"/>
+                        <outlet property="submitButton" destination="Zcc-Id-gZR" id="gdu-zO-XWs"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cJk-rF-hK7" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -174,15 +175,22 @@
                                     <action selector="loginPressed:" destination="gf3-2w-YLH" eventType="touchUpInside" id="ShN-sp-2Cf"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Don't have an account? Sign Up" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n40-z0-0tt">
-                                <rect key="frame" x="64" y="351" width="256" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PXE-do-cko" userLabel="Debug Text Label">
+                                <rect key="frame" x="51" y="478" width="253" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PXE-do-cko" userLabel="Debug Text Label">
-                                <rect key="frame" x="76" y="478" width="253" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="On The Map" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yk7-NU-IUl">
+                                <rect key="frame" x="97" y="138" width="180" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Don't have an account? Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n40-z0-0tt">
+                                <rect key="frame" x="49" y="353" width="256" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
@@ -225,7 +233,7 @@
         <scene sceneID="d6K-Yg-ALL">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="mkb-rq-Pp4" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Map" image="first" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Map" image="map" id="acW-dT-cKf"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Gv5-9p-B4y">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -244,7 +252,7 @@
         <scene sceneID="heo-jQ-rWO">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="n0E-4H-lbo" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="List" image="second" id="cPa-gy-q4n"/>
+                    <tabBarItem key="tabBarItem" title="List" image="list" id="cPa-gy-q4n"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="mJO-9S-Qlg">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
@@ -288,14 +296,11 @@
                                 <action selector="logoutSession:" destination="5zr-xF-COr" id="eGu-3B-Lsd"/>
                             </connections>
                         </barButtonItem>
-                        <rightBarButtonItems>
-                            <barButtonItem title="ref" id="Bza-86-SUW"/>
-                            <barButtonItem title="pin" id="h87-ai-XSu">
-                                <connections>
-                                    <segue destination="cua-j6-EzL" kind="presentation" id="ctk-kA-nME"/>
-                                </connections>
-                            </barButtonItem>
-                        </rightBarButtonItems>
+                        <barButtonItem key="rightBarButtonItem" image="pin" id="h87-ai-XSu">
+                            <connections>
+                                <segue destination="cua-j6-EzL" kind="presentation" id="ctk-kA-nME"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="shu-pq-a4N" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -304,8 +309,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="first" width="30" height="30"/>
-        <image name="second" width="30" height="30"/>
+        <image name="list" width="32" height="32"/>
+        <image name="map" width="32" height="32"/>
+        <image name="pin" width="32" height="32"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ctk-kA-nME"/>

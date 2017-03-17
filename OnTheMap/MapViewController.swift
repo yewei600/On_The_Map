@@ -4,8 +4,6 @@
 //
 //  Created by Eric Wei on 2017-03-04.
 //  Copyright © 2017 EricWei. All rights reserved.
-//
-
 import UIKit
 import MapKit
 
@@ -50,6 +48,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib
+        mapView.delegate = self
     }
     
     //MARK: MKMapViewDelegate

@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class InfoPostingViewController: UIViewController{
+class InfoPostingViewController: UIViewController, UITextFieldDelegate{
     
     enum ViewState {
         case findLocation, postLocation
@@ -22,16 +22,26 @@ class InfoPostingViewController: UIViewController{
     // MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        mapStringTextField.delegate = self
+        mediaURLTextField.delegate = self
         configureUI(.findLocation)
     }
     
     // MARK: Outlets
+    
+    @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var postingMapView: MKMapView!
     @IBOutlet weak var mapStringTextField: UITextField!
     @IBOutlet weak var mediaURLTextField: UITextField!
     @IBOutlet weak var findButton: UIButton!
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        mapStringTextField.resignFirstResponder()
+        mediaURLTextField.resignFirstResponder()
+        return true
+    }
     
     @IBAction func exitInfoPostingEditor(_ sender: Any) {
         dismiss(animated: true, completion: nil)
@@ -69,10 +79,8 @@ class InfoPostingViewController: UIViewController{
         }
     }
     
-    
     @IBAction func submitStudentLocation(_ sender: Any) {
-        activityIndicator.isHidden = false
-        activityIndicator.startAnimating()
+        self.startActivity()
         
         //check empty string
         if mediaURLTextField.text!.isEmpty {
@@ -80,21 +88,11 @@ class InfoPostingViewController: UIViewController{
             return
         }
         
-        //        let handleRequest: ((NSError?, String) -> Void) = { (error, mediaURL) in
-        //            if let _ = error {
-        //                self.displayAlert("Student location couldn't be posted") { (alert) in
-        //                    self.dismiss(animated: true, completion: nil)
-        //                }
-        //            }else{
-        //                self.dismiss(animated: true, completion: nil)
-        //            }
-        //        }
-        
         let studentLocation = placemark?.location?.coordinate
         
         let jsonRequest = "{\"uniqueKey\": \"1234\", \"firstName\": \"Eric\", \"lastName\": \"Wei\",\"mapString\": \"\(mapStringTextField.text!)\", \"mediaURL\": \"https://\(mediaURLTextField.text!)\",\"latitude\": \(studentLocation!.latitude), \"longitude\": \(studentLocation!.longitude)}"
         
-        print(jsonRequest)
+        // print(jsonRequest)
         
         parseClient.postStudentLocation(jsonBody: jsonRequest){ (success, error) in
             if success {
@@ -111,21 +109,14 @@ class InfoPostingViewController: UIViewController{
         }
     }
     
-    
-    func displayAlert(_ message: String, completionHandler:((UIAlertAction) -> Void)? = nil) {
+    func displayAlert(_ message: String)  {
         DispatchQueue.main.async {
-            
+            self.stopActivity()
+            let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
-    
-    
-    
-    //MARK: Configure UI (Activity)
-    //    func setupUI() {
-    //
-    //        activityIndicator.isHidden = true
-    //        activityIndicator.stopAnimating()
-    //    }
     
     func configureUI(_ state: ViewState) {
         stopActivity()
@@ -133,24 +124,24 @@ class InfoPostingViewController: UIViewController{
         UIView.animate(withDuration: 1.0) {
             switch(state) {
             case .findLocation:
+                self.infoLabel.text = "Where are you studying today?"
                 self.findButton.isHidden = false
                 self.submitButton.isHidden = true
                 self.mapStringTextField.isHidden = false
                 self.mediaURLTextField.isHidden = true
             case .postLocation:
+                self.infoLabel.text = "Enter a media URL"
                 self.findButton.isHidden = true
                 self.submitButton.isHidden = false
                 self.mapStringTextField.isHidden = true
                 self.mediaURLTextField.isHidden = false
             }
         }
-        
     }
     
     func startActivity() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
-        
     }
     
     func stopActivity() {
