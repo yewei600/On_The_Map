@@ -20,7 +20,7 @@ class UdacityClient: NSObject {
     var sessionID: String? = nil
     var userID: Int? = nil
     
-    //MARK: GET
+    //MARK: POST
     func getSessionID(_ emailText:String, _ passwordText: String, _ completionHandlerForGetSessionID: @escaping (_ success: Bool, _ errorStr: String?) -> Void) {
         
         let request = NSMutableURLRequest(url: URL(string: "https://www.udacity.com/api/session")!)
@@ -98,7 +98,6 @@ class UdacityClient: NSObject {
             completionHandlerForDeleteSessionID(true,nil)
         }
         task.resume()
-        
     }
     
     

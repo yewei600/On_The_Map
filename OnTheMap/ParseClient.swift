@@ -15,21 +15,12 @@ class ParseClient : NSObject {
     //shared session
     var session = URLSession.shared
     
-    //https://parse.udacity.com/parse/classes/StudentLocation
-    
     //MARK: GET
-    //, completionHandlerForGET: @escaping(_ result: AnyObject?, _ error: String) -> Void
     func getStudentLocations(parameters: [String:AnyObject], completionHandler: @escaping (_ success: Bool, _ error: NSError?) -> Void)
         -> URLSessionTask {
-            
-            //        var parametersWithApiKey = parameters
-            //        parametersWithApiKey[ParameterKeys.ApiKey] = Constants.ApiKey as AnyObject?
-            //
             let request = NSMutableURLRequest(url: parseURLFromParameters(parameters))
             request.addValue(Constants.ApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
             request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
-            
-            print("request taskForGetMethod === \(request)")
             
             let task = session.dataTask(with: request as URLRequest) { (data,response,error) in
                 func sendError(_ error: String) {
@@ -42,7 +33,6 @@ class ParseClient : NSObject {
                     sendError("There was an error with your request: \(error)")
                     return
                 }
-                // print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
                 
                 //populate the StudentInformation array
                 self.convertDataWithCompletionHandler(data!)
@@ -55,11 +45,6 @@ class ParseClient : NSObject {
     
     //MARK: POST
     func postStudentLocation(jsonBody: String, completionHandler: @escaping (_ success: Bool, _ error: NSError?) -> Void) {
-        
-        //        var parametersWithApiKey = parameters
-        //        parametersWithApiKey[ParameterKeys.ApiKey] = Constants.ApiKey as AnyObject?
-        
-        // let request = NSMutableURLRequest(url: parseURLFromParameters(parametersWithApiKey))
         let request = NSMutableURLRequest(url: URL(string: "https://parse.udacity.com/parse/classes/StudentLocation")!)
         request.httpMethod = "POST"
         request.addValue(Constants.ApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
@@ -77,66 +62,17 @@ class ParseClient : NSObject {
                 completionHandler(false, NSError(domain: "postStudentLocation", code: 1, userInfo: userInfo))
                 return
             }
-            print("response for post student!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
             
-            //save the ObjectID right here!!!!
-            self.getStudentObjectID(data: data!)
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                let userInfo = [NSLocalizedDescriptionKey : error]
+                completionHandler(false, NSError(domain: "postStudentLocation", code: 1, userInfo: userInfo))
+                return
+            }
+            
             completionHandler(true, nil)
-            
         }
         
         task.resume()
-    }
-    
-    func getStudentObjectID(data: Data) {
-        if StudentInformation.MyStudentInfoObjectID == "" {
-            var parsedResult: AnyObject! = nil
-            do {
-                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as AnyObject
-                
-                if let objectID = parsedResult?[JSONResponseKeys.objectID] as? String {
-                    print(objectID)
-                    StudentInformation.MyStudentInfoObjectID = objectID
-                }
-            } catch {
-                print("error getting objectID")
-            }
-        }
-    }
-    
-    
-    //MARK: PUT
-    func putStudentLocation(parameters:[String:AnyObject]) {
-        //        //how do you get teh objectId?
-        //        let request = NSMutableURLRequest(url: parseURLFromParameters(parameters))
-        //        request.httpMethod = "PUT"
-        //        request.addValue(Constants.ApplicationID, forHTTPHeaderField: "X-Parse-Application-Id")
-        //        request.addValue(Constants.ApiKey, forHTTPHeaderField: "X-Parse-REST-API-Key")
-        //
-        //        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        //        request.httpBody =
-        //
-        //        print("request putStudentLocation === \(request)")
-        //
-        //        let task = session.dataTask(with: request as URLRequest) { (data,response,error) in
-        //            func sendError(_ error: String) {
-        //                print(error)
-        //                let userInfo = [NSLocalizedDescriptionKey: error]
-        //                //completionHandlerForGET()
-        //            }
-        //
-        //            guard (error == nil) else {
-        //                sendError("There was an error with your request: \(error)")
-        //                return
-        //            }
-        //            print("hello!!!   \(NSString(data: data!, encoding: String.Encoding.utf8.rawValue)!)")
-        //
-        //            //populate the StudentInformation array
-        //            self.convertDataWithCompletionHandler(data!)
-        //
-        //        }
-        //        task.resume()
-        
     }
     
     //given raw JSON, return a usable Foundation object
@@ -147,14 +83,12 @@ class ParseClient : NSObject {
             
             //get an array of StudentInformation objects
             if let results = parsedResult?[JSONResponseKeys.results] as? [[String:AnyObject]] {
-                StudentInformation.StudentArray = StudentInformation.studentInfoFromResults(results)
-                print("StudentArray has length \(StudentInformation.StudentArray.count)")
+                StudentArray.sharedDataSource().studentLocations = StudentInformation.studentInfoFromResults(results)
+                print("StudentArray has length \(StudentArray.sharedDataSource().studentLocations.count)")
             }
             
         } catch {
             let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)"]
-            
-            // completionHandler???
         }
     }
     

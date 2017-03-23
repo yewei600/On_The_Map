@@ -21,10 +21,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    func showAnnotations() {
         var annotations = [MKPointAnnotation]()
         
-        let studentLocations = StudentInformation.StudentArray
+        let studentLocations = StudentArray.sharedDataSource().studentLocations
         
         for location in studentLocations {
             let lat = CLLocationDegrees(location.latitude)
@@ -70,13 +70,30 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         return pinView
     }
     
+    func displayAlert(_ message: String)  {
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        }
+    }
+    
     //respond to taps
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         print("calloutAccessoryControlTapped() called")
         if control == view.rightCalloutAccessoryView {
             let app = UIApplication.shared
             if let toOpen = view.annotation?.subtitle! {
-                app.openURL(URL(string: toOpen)!)
+                guard toOpen != "" else {
+                    displayAlert("Empty URL")
+                    return
+                }
+                guard app.openURL(URL(string: toOpen)!) else {
+                    displayAlert("Can't open URL")
+                    return
+                }
+            } else {
+                displayAlert("URL empty")
             }
         }
     }

@@ -13,16 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        
-        let parameters = [
-            "limit":100
-        ]
-        ParseClient.sharedInstance().getStudentLocations(parameters: parameters as [String:AnyObject], completionHandler: { (success, error) in
-        })
-        
         return true
     }
     

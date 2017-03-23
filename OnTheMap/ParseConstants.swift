@@ -22,25 +22,12 @@ extension ParseClient {
         static let ApiPath = "/parse/classes/StudentLocation"
         static let AuthorizationURL = "https://www.themoviedb.org/authenticate/"
         static let AccountURL = "https://www.themoviedb.org/account/"
-        
-        //    static let ApiScheme = "https"
-        //    static let ApiHost = "api.themoviedb.org"
-        //    static let ApiPath = "/3"
-        //    static let AuthorizationURL = "https://www.themoviedb.org/authenticate/"
-        //    static let AccountURL = "https://www.themoviedb.org/account/"
     }
     
-    struct Methods {
-        
-    }
-    
-    struct ParameterKeys {
-        static let ApiKey = "api_key"
-        
-    }
-    
-    struct JSONBodyKeys {
-        
+    struct MyInformation {
+        static let uniqueKey = "1234"
+        static let firstName = "Eric"
+        static let lastName = "W"
     }
     
     struct JSONResponseKeys {
@@ -57,8 +44,6 @@ extension ParseClient {
         static let longitude = "longitude"
         static let createdAt = "createdAt"
         static let updatedAt = "updatedAt"
-        //static let ACL = "ACL"
-        
     }
     
 }

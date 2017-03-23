@@ -15,17 +15,8 @@ class TableViewController: UITableViewController {
     
     //MARK: lifecycle
     override func viewWillAppear(_ animated: Bool) {
-        studentLocations = StudentInformation.StudentArray
+        studentLocations = StudentArray.sharedDataSource().studentLocations
         tableView.reloadData()
-    }
-    
-    @IBAction func logoutSession(_ sender: Any) {
-        UdacityClient.sharedInstance().deleteSessionID { (success, error) in
-            if success {
-                //go back to the login screen
-                self.dismiss(animated: true, completion: nil)
-            }
-        }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -45,6 +36,11 @@ class TableViewController: UITableViewController {
         let student = studentLocations[(indexPath as IndexPath).row]
         
         //try catch for openning an URL
-        UIApplication.shared.openURL(URL(string: student.mediaURL)!)
+        guard UIApplication.shared.openURL(URL(string: student.mediaURL)!) else {
+            let alert = UIAlertController(title: "", message: "Invalid URL!", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+            return
+        }
     }
 }

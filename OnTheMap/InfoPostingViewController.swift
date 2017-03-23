@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import SystemConfiguration
 
 class InfoPostingViewController: UIViewController, UITextFieldDelegate{
     
@@ -18,12 +19,14 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate{
     // MARK: Properties
     let parseClient = ParseClient.sharedInstance()
     var placemark: CLPlacemark? = nil
+    var myInformation = ParseClient.MyInformation.self
     
     // MARK: Life Cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         mapStringTextField.delegate = self
         mediaURLTextField.delegate = self
+        
         configureUI(.findLocation)
     }
     
@@ -90,22 +93,30 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate{
         
         let studentLocation = placemark?.location?.coordinate
         
-        let jsonRequest = "{\"uniqueKey\": \"1234\", \"firstName\": \"Eric\", \"lastName\": \"Wei\",\"mapString\": \"\(mapStringTextField.text!)\", \"mediaURL\": \"https://\(mediaURLTextField.text!)\",\"latitude\": \(studentLocation!.latitude), \"longitude\": \(studentLocation!.longitude)}"
+        let jsonRequest = "{\"uniqueKey\": \"\(myInformation.uniqueKey)\", \"firstName\": \"\(myInformation.firstName)\", \"lastName\": \"\(myInformation.lastName)\",\"mapString\": \"\(mapStringTextField.text!)\", \"mediaURL\": \"https://\(mediaURLTextField.text!)\",\"latitude\": \(studentLocation!.latitude), \"longitude\": \(studentLocation!.longitude)}"
         
-        // print(jsonRequest)
-        
-        parseClient.postStudentLocation(jsonBody: jsonRequest){ (success, error) in
-            if success {
-                let parameters = [
-                    "limit":100
-                ]
-                ParseClient.sharedInstance().getStudentLocations(parameters: parameters as [String:AnyObject], completionHandler: { (success, error) in
-                    self.stopActivity()
-                    if success {
-                        self.dismiss(animated: true, completion: nil)
-                    }
-                })
+        //CHECK FOR NETWORK CONNECTVITY HERE!!! before posting student location
+        if isInternetAvailable() {
+            print("network is Available!")
+            parseClient.postStudentLocation(jsonBody: jsonRequest){ (success, error) in
+                if success {
+                    let parameters = [
+                        "limit":100,
+                        "order":"-updatedAt"
+                        ] as [String : Any]
+                    //update the student location array
+                    ParseClient.sharedInstance().getStudentLocations(parameters: parameters as [String:AnyObject], completionHandler: { (success, error) in
+                        self.stopActivity()
+                        if success {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                    })
+                } else {
+                    self.displayAlert("Couldn't add student location!")
+                }
             }
+        } else {
+            displayAlert("No network connection")
         }
     }
     
@@ -147,5 +158,26 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate{
     func stopActivity() {
         activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
+    }
+    
+    func isInternetAvailable() -> Bool
+    {
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+        
+        let defaultRouteReachability = withUnsafePointer(to: &zeroAddress) {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {zeroSockAddress in
+                SCNetworkReachabilityCreateWithAddress(nil, zeroSockAddress)
+            }
+        }
+        
+        var flags = SCNetworkReachabilityFlags()
+        if !SCNetworkReachabilityGetFlags(defaultRouteReachability!, &flags) {
+            return false
+        }
+        let isReachable = (flags.rawValue & UInt32(kSCNetworkFlagsReachable)) != 0
+        let needsConnection = (flags.rawValue & UInt32(kSCNetworkFlagsConnectionRequired)) != 0
+        return (isReachable && !needsConnection)
     }
 }
