@@ -61,7 +61,7 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate{
     
     @IBAction func findLocationOnMap(_ sender: Any) {
         if mapStringTextField.text!.isEmpty {
-            //displayAlert
+            displayAlert("no location entered")
             return
         }
         //start activity indicator
@@ -104,7 +104,7 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate{
         
         let jsonRequest = "{\"uniqueKey\": \"\(myInformation.uniqueKey)\", \"firstName\": \"\(myInformation.firstName)\", \"lastName\": \"\(myInformation.lastName)\",\"mapString\": \"\(mapStringTextField.text!)\", \"mediaURL\": \"https://\(mediaURLTextField.text!)\",\"latitude\": \(studentLocation!.latitude), \"longitude\": \(studentLocation!.longitude)}"
         
-        //CHECK FOR NETWORK CONNECTVITY HERE!!! before posting student location
+        //check internet connectivity
         if isInternetAvailable() {
             print("network is Available!")
             parseClient.postStudentLocation(jsonBody: jsonRequest){ (success, error) in
