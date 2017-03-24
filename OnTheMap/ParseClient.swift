@@ -34,6 +34,12 @@ class ParseClient : NSObject {
                     return
                 }
                 
+                guard let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode >= 200 && statusCode <= 299 else {
+                    let userInfo = [NSLocalizedDescriptionKey : error]
+                    completionHandler(false, NSError(domain: "postStudentLocation", code: 1, userInfo: userInfo))
+                    return
+                }
+                
                 //populate the StudentInformation array
                 self.convertDataWithCompletionHandler(data!)
                 

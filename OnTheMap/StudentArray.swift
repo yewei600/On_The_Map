@@ -11,6 +11,7 @@ import Foundation
 class StudentArray: NSObject {
     
     var studentLocations = [StudentInformation]()
+    var myUniqueKey = ""
     
     override init(){
         super.init()

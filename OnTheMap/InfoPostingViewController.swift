@@ -16,20 +16,6 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate{
         case findLocation, postLocation
     }
     
-    // MARK: Properties
-    let parseClient = ParseClient.sharedInstance()
-    var placemark: CLPlacemark? = nil
-    var myInformation = ParseClient.MyInformation.self
-    
-    // MARK: Life Cycle
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        mapStringTextField.delegate = self
-        mediaURLTextField.delegate = self
-        
-        configureUI(.findLocation)
-    }
-    
     // MARK: Outlets
     
     @IBOutlet weak var infoLabel: UILabel!
@@ -39,6 +25,29 @@ class InfoPostingViewController: UIViewController, UITextFieldDelegate{
     @IBOutlet weak var findButton: UIButton!
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    // MARK: Properties
+    let parseClient = ParseClient.sharedInstance()
+    var placemark: CLPlacemark? = nil
+    var myInformation = StudentInformation(dictionary: [:])
+    
+    override func viewWillAppear(_ animated: Bool) {
+        UdacityClient.sharedInstance().getUserData { (success, firstName, lastName) in
+            if success {
+                self.myInformation.firstName = firstName!
+                self.myInformation.lastName = lastName!
+            }
+        }
+    }
+    
+    // MARK: Life Cycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        mapStringTextField.delegate = self
+        mediaURLTextField.delegate = self
+        
+        configureUI(.findLocation)
+    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         mapStringTextField.resignFirstResponder()

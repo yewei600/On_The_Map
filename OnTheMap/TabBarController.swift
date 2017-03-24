@@ -26,7 +26,9 @@ class TabBarController: UITabBarController {
                     fvc.showAnnotations()
                 }
             } else {
-                print("error downloading studentInfo, from tabbar VC")
+                let alert = UIAlertController(title: "", message: "Couldn't download pins, server error", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
